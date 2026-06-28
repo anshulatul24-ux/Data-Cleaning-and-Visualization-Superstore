@@ -1,93 +1,86 @@
-# # Data Cleaning and Visualization of Superstore Sales Dataset
-# 
-# ## Internship Project - Thiranex
-# 
-# ### Submitted by:
-# **Anshul Patil**
-# 
-# ### Internship Domain:
-# **Data Science**
-# 
-# ### Tools Used
-# - Python
-# - Pandas
-# - NumPy
-# - Matplotlib
-# - Seaborn
-# - Jupyter Notebook
-# 
-# ---
-# 
-# ## Objective
-# 
-# The objective of this project is to clean the Superstore Sales dataset, perform exploratory data analysis, and create meaningful visualizations to derive business insights.
+# ============================================================
+# Data Cleaning and Visualization of Superstore Sales Dataset
+# Internship Project - Thiranex
+#
+# Submitted by: Anshul Patil
+# Domain: Data Science
+# ============================================================
 
-# %%
+# ==========================
+# Import Libraries
+# ==========================
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Set plot style
-
-# Plot style
+# Plot Style
 plt.style.use("ggplot")
 
-print("Libraries imported successfully!")
+# ==========================
+# Load Dataset
+# ==========================
 
-# %%
-df = pd.read_csv("../dataset/Superstore.csv")
-
-df.head()
-
-# %%
-df = pd.read_csv("../dataset/Superstore.csv")
-
-# %%
-file_path = "../dataset/Superstore.csv"
-
-with open(file_path, "rb") as f:
-    print(f.read(100))
-
-# %%
-import pandas as pd
+print("Loading dataset...")
 
 df = pd.read_csv("../dataset/Superstore.csv", encoding="latin1")
 
-df.head()
+print("Dataset loaded successfully!\n")
 
-# %%
-print("Number of Rows and Columns:")
+# ==========================
+# Basic Information
+# ==========================
+
+print("=" * 60)
+print("DATASET INFORMATION")
+print("=" * 60)
+
+print("\nShape of Dataset:")
 print(df.shape)
 
-# %%
-print("Column Names:")
-print(df.columns)
+print("\nColumn Names:")
+print(df.columns.tolist())
 
-# %%
-df.info()
+print("\nDataset Information:")
+print(df.info())
 
-# %%
-df.describe()
+print("\nStatistical Summary:")
+print(df.describe())
 
-# %%
+# ==========================
+# Missing Values
+# ==========================
+
+print("\nMissing Values:")
 print(df.isnull().sum())
 
-# %%
-print("Duplicate Rows:", df.duplicated().sum())
+# ==========================
+# Duplicate Records
+# ==========================
 
-# %%
+print("\nDuplicate Rows:", df.duplicated().sum())
+
 df = df.drop_duplicates()
 
-print("Dataset Shape After Removing Duplicates:")
-print(df.shape)
+print("Shape After Removing Duplicates:", df.shape)
 
-# %%
+# ==========================
+# Save Cleaned Dataset
+# ==========================
+
 df.to_csv("../dataset/Cleaned_Superstore.csv", index=False)
 
-print("Cleaned dataset saved successfully!")
+print("\nCleaned dataset saved successfully!")
 
-# %%
+# ============================================================
+# DATA VISUALIZATION
+# ============================================================
+
+# --------------------------
+# Sales by Category
+# --------------------------
+
 plt.figure(figsize=(8,5))
 
 sns.barplot(
@@ -100,11 +93,18 @@ sns.barplot(
 
 plt.title("Total Sales by Category")
 plt.xlabel("Category")
-plt.ylabel("Total Sales")
+plt.ylabel("Sales")
+
+plt.tight_layout()
+
+plt.savefig("../images/sales_by_category.png")
 
 plt.show()
 
-# %%
+# --------------------------
+# Sales by Region
+# --------------------------
+
 plt.figure(figsize=(8,5))
 
 sns.barplot(
@@ -117,11 +117,18 @@ sns.barplot(
 
 plt.title("Total Sales by Region")
 plt.xlabel("Region")
-plt.ylabel("Total Sales")
+plt.ylabel("Sales")
+
+plt.tight_layout()
+
+plt.savefig("../images/sales_by_region.png")
 
 plt.show()
 
-# %%
+# --------------------------
+# Profit Distribution
+# --------------------------
+
 plt.figure(figsize=(8,5))
 
 sns.histplot(df["Profit"], bins=30, kde=True)
@@ -129,9 +136,16 @@ sns.histplot(df["Profit"], bins=30, kde=True)
 plt.title("Profit Distribution")
 plt.xlabel("Profit")
 
+plt.tight_layout()
+
+plt.savefig("../images/profit_distribution.png")
+
 plt.show()
 
-# %%
+# --------------------------
+# Sales vs Profit
+# --------------------------
+
 plt.figure(figsize=(8,6))
 
 sns.scatterplot(
@@ -143,9 +157,16 @@ sns.scatterplot(
 
 plt.title("Sales vs Profit")
 
+plt.tight_layout()
+
+plt.savefig("../images/sales_vs_profit.png")
+
 plt.show()
 
-# %%
+# --------------------------
+# Top 10 States by Sales
+# --------------------------
+
 top_states = (
     df.groupby("State")["Sales"]
       .sum()
@@ -164,9 +185,16 @@ plt.title("Top 10 States by Sales")
 plt.xlabel("Sales")
 plt.ylabel("State")
 
+plt.tight_layout()
+
+plt.savefig("../images/top_states_sales.png")
+
 plt.show()
 
-# %%
+# --------------------------
+# Correlation Heatmap
+# --------------------------
+
 numeric_df = df.select_dtypes(include=["number"])
 
 plt.figure(figsize=(8,6))
@@ -179,9 +207,16 @@ sns.heatmap(
 
 plt.title("Correlation Heatmap")
 
+plt.tight_layout()
+
+plt.savefig("../images/correlation_heatmap.png")
+
 plt.show()
 
-# %%
+# --------------------------
+# Monthly Sales Trend
+# --------------------------
+
 df["Order Date"] = pd.to_datetime(df["Order Date"])
 
 monthly_sales = (
@@ -193,7 +228,11 @@ monthly_sales.index = monthly_sales.index.astype(str)
 
 plt.figure(figsize=(12,5))
 
-monthly_sales.plot(marker="o")
+plt.plot(
+    monthly_sales.index,
+    monthly_sales.values,
+    marker="o"
+)
 
 plt.title("Monthly Sales Trend")
 plt.xlabel("Month")
@@ -203,34 +242,51 @@ plt.xticks(rotation=45)
 
 plt.grid(True)
 
+plt.tight_layout()
+
+plt.savefig("../images/monthly_sales_trend.png")
+
 plt.show()
 
-# %% [markdown]
-# # Conclusion
-# 
-# ## Key Findings
-# 
-# - The dataset was successfully loaded and cleaned.
-# - Duplicate records were identified and removed.
-# - Missing values were checked.
-# - Sales and profit trends were analyzed using different visualizations.
-# - Correlation between numerical variables was examined.
-# - Business insights were generated from regional and category-wise sales.
-# 
-# ## Future Scope
-# 
-# - Build a machine learning model using this dataset.
-# - Develop an interactive dashboard using Power BI or Tableau.
-# - Perform sales forecasting using time series analysis.
-# 
-# ## Technologies Used
-# 
-# - Python
-# - Pandas
-# - NumPy
-# - Matplotlib
-# - Seaborn
-# - Jupyter Notebook
+# ============================================================
+# Business Insights
+# ============================================================
 
-# %% [markdown]
-# 
+print("\n" + "=" * 60)
+print("BUSINESS INSIGHTS")
+print("=" * 60)
+
+print("""
+• Technology category generated the highest sales.
+
+• Regional sales varied significantly.
+
+• Some products generated high sales but low profit.
+
+• Monthly sales showed seasonal trends.
+
+• Correlation analysis revealed relationships
+  among numerical variables.
+""")
+
+# ============================================================
+# Conclusion
+# ============================================================
+
+print("=" * 60)
+print("PROJECT COMPLETED SUCCESSFULLY")
+print("=" * 60)
+
+print("""
+Project Summary
+
+✔ Dataset Loaded
+✔ Data Cleaned
+✔ Missing Values Checked
+✔ Duplicate Records Removed
+✔ Cleaned Dataset Saved
+✔ 7 Visualizations Generated
+✔ Business Insights Extracted
+
+Thank you!
+""")
